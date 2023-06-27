@@ -1,0 +1,27 @@
+from functools import lru_cache
+cache = lru_cache(None)
+@cache
+def cost(roads, costs, taxes, x: int, k: int):
+    if x == 0:	
+        return 0
+    return min((taxes[y] + costs[x] * (k - longest_route(roads, y)) + cost(roads, costs, taxes, y, k)
+            for y, d in enumerate(roads[x])
+            if d != -1 ), default=-1)
+@cache
+def longest_route(roads, x: int):
+    if x == 0:
+        return 0
+    return max((longest_route(roads, y) + d for y, d in enumerate(roads[x]) if d != -1), default=-1)
+if __name__ == '__main__':
+    try:
+        N, M, K = (int(x) for x in input().split())
+        costs = tuple(int(x) for x in input().split())
+        taxes = tuple(int(x) for x in input().split())
+roads = [[-1] * N for _ in range(N)]
+        for _ in range(M):
+            a, b, d = (int(x) for x in input().split())
+            roads[a][b] = d
+        roads = tuple(map(tuple, roads))
+        print(*(cost(roads, costs, taxes, x, K) for x in range(1, N)))
+    except EOFError:
+        pass
